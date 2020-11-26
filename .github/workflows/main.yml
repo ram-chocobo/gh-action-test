@@ -15,30 +15,33 @@ jobs:
           eval `ssh-agent`
           ssh-add - <<< "${{ secrets.PRIVATE_KEY }}"
           ssh -t -t ${{ secrets.USERNAME }}@${{ secrets.HOST }}
-          cd Project18-B-Web-Duxit/src
-      - name: pull master
-        run: |
-          git checkout master
-          git pull origin master
-#       - name: build backend
-#         run: |
-#           cd backend
-#           npm i
-#           npm run build
-#           rm -rf node_modules
-#           npm ci
-#           cd ..
-#       - name: build frontend
-#         run: |
-#           cd frontend
-#           npm i
-#           npm run build
-#           rm -rf node_modules
-#           cd ..
-#       - name: restart backend server
-#         run: |
-#           forever stopall
-#           forever start ./backend/dist/app.js
-#       - name: update nginx serve files
-#         run: |
-#           echo 뭐였더라...
+          cd ${{ secrets.PROJECT_LOCAL_REPO }}
+            - name: pull master
+              run: |
+                git checkout master
+                git pull origin master
+            - name: logout from ssh
+              run: |
+                logout
+      #       - name: build backend
+      #         run: |
+      #           cd backend
+      #           npm i
+      #           npm run build
+      #           rm -rf node_modules
+      #           npm ci
+      #           cd ..
+      #       - name: build frontend
+      #         run: |
+      #           cd frontend
+      #           npm i
+      #           npm run build
+      #           rm -rf node_modules
+      #           cd ..
+      #       - name: restart backend server
+      #         run: |
+      #           forever stopall
+      #           forever start ./backend/dist/app.js
+      #       - name: update nginx serve files
+      #         run: |
+      #           echo 뭐였더라...
