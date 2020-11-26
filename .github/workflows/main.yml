@@ -14,7 +14,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-agent > /dev/null
           ssh-add - <<< "${{ secrets.PRIVATE_KEY }}"
           ssh ${{ secrets.NCLOUD }}
           cd Project18-B-Web-Duxit/src
