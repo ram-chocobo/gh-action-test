@@ -1,0 +1,46 @@
+name: Deploy master branch
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: connect to ssh
+        env:
+            SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-add - <<< "${{ secrets.PRIVATE_KEY }}"
+          ssh ${{ secrets.NCLOUD }}
+          cd Project18-B-Web-Duxit/src
+      - name: pull master
+        run: |
+          git checkout master
+          git pull origin master
+#       - name: build backend
+#         run: |
+#           cd backend
+#           npm i
+#           npm run build
+#           rm -rf node_modules
+#           npm ci
+#           cd ..
+#       - name: build frontend
+#         run: |
+#           cd frontend
+#           npm i
+#           npm run build
+#           rm -rf node_modules
+#           cd ..
+#       - name: restart backend server
+#         run: |
+#           forever stopall
+#           forever start ./backend/dist/app.js
+#       - name: update nginx serve files
+#         run: |
+#           echo 뭐였더라...
