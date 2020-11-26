@@ -16,13 +16,9 @@ jobs:
           ssh-add - <<< "${{ secrets.PRIVATE_KEY }}"
           ssh -t -t ${{ secrets.USERNAME }}@${{ secrets.HOST }}
           cd ${{ secrets.PROJECT_LOCAL_REPO }}
-            - name: pull master
-              run: |
-                git checkout master
-                git pull origin master
-            - name: logout from ssh
-              run: |
-                logout
+          git checkout master
+          git pull origin master
+          logout
       #       - name: build backend
       #         run: |
       #           cd backend
