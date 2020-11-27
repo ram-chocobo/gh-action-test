@@ -3,20 +3,24 @@ name: Deploy master branch
 on:
   push:
     branches: [main]
+  release:
+    types:
+      - created
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: connect to ssh
+        shell: bash
         run: |
+          ::group::connect to ssh
           mkdir -p ~/.ssh
           ssh-keyscan ${{ secrets.HOST }} >> ~/.ssh/known_hosts
           eval `ssh-agent`
           ssh-add - <<< "${{ secrets.PRIVATE_KEY }}"
           ssh -t -t ${{ secrets.USERNAME }}@${{ secrets.HOST }}
-      - name: pull master branch
-        run: |
+          ::endgroup::
           cd ${{ secrets.PROJECT_LOCAL_REPO }}
           git checkout master
           git pull origin master
