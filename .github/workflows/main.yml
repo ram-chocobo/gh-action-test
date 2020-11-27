@@ -1,3 +1,6 @@
+# 
+# https://github.com/fifsky/ssh-action/blob/master/entrypoint.sh
+
 name: Deploy master branch
 
 on:
@@ -11,45 +14,43 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: make script
+      - name: Make deploy script
         run: |
           cat << EOF > shell.sh
-          touch haha.txt
-          # pull master branch
-          echo "pull master branch"
-          cd ${{ secrets.PROJECT_LOCAL_REPO }}
-          git checkout master
-          git pull origin master
+          echo "=== pull master branch ==="
+          # cd ${{ secrets.SSH_WORKING_DIRECTORY }}
+          # git checkout master
+          # git pull origin master
+          # # 최신 tag를 이용할경우 git pull origin $(git describe --tags $(git rev-list --tags --max-count=1))
+          
+          echo "=== build backend ==="
+          # cd backend
+          # npm ci
+          # npm run build
+          # cd ..
+          
+          echo "=== build frontend ==="
+          # cd frontend
+          # npm ci
+          # npm run build
+          # cd ..
+          
+          echo "=== restart backend server ==="
+          # forever stopall
+          # forever start ./backend/dist/app.js
+          
+          echo "=== update nginx serve files ==="
+          # rm -rf ${{ secrets.NGINX_DIRECTORY }}
+          # cp ./frontend/dist ${{ secrets.NGINX_DIRECTORY }}
           EOF
-          cat shell.sh
-      - name: connect to ssh
+      - name: Setting ssh agent and key
         shell: bash
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
           eval `ssh-agent`
-          ssh-add - <<< "${{ secrets.PRIVATE_KEY }}"
-          ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} < shell.sh
-      - run: rm shell.sh
-      #       - name: build backend
-      #         run: |
-      #           cd backend
-      #           npm i
-      #           npm run build
-      #           rm -rf node_modules
-      #           npm ci
-      #           cd ..
-      #       - name: build frontend
-      #         run: |
-      #           cd frontend
-      #           npm i
-      #           npm run build
-      #           rm -rf node_modules
-      #           cd ..
-      #       - name: restart backend server
-      #         run: |
-      #           forever stopall
-      #           forever start ./backend/dist/app.js
-      #       - name: update nginx serve files
-      #         run: |
-      #           echo 뭐였더라...
+          ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
+      - name: Run script on ssh
+        run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} < shell.sh
+      - name: Cleanup
+        run: rm shell.sh
