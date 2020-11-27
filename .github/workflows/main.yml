@@ -14,7 +14,12 @@ jobs:
       - name: make script
         run: |
           cat << EOF > shell.sh
-          whoami
+          touch haha.txt
+          # pull master branch
+          echo "pull master branch"
+          cd ${{ secrets.PROJECT_LOCAL_REPO }}
+          git checkout master
+          git pull origin master
           EOF
           cat shell.sh
       - name: connect to ssh
@@ -25,12 +30,7 @@ jobs:
           eval `ssh-agent`
           ssh-add - <<< "${{ secrets.PRIVATE_KEY }}"
           ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} < shell.sh
-      - run: |
-          whoami
-          cd ${{ secrets.PROJECT_LOCAL_REPO }}
-          git checkout master
-          git pull origin master
-          exit 0;
+      - run: rm shell.sh
       #       - name: build backend
       #         run: |
       #           cd backend
