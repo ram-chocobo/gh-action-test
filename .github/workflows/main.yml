@@ -50,6 +50,6 @@ jobs:
           # eval `ssh-agent`
           # ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
       - name: Run script on ssh
-        run: ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} < shell.sh
+        run: ssh -i ${{ secrets.PRIVATE_KEY }} -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} < shell.sh
       - name: Cleanup
         run: rm shell.sh
