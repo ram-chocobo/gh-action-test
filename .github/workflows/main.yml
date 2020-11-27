@@ -18,7 +18,7 @@ jobs:
           ssh-keyscan ${{ secrets.HOST }} >> ~/.ssh/known_hosts
           eval `ssh-agent`
           ssh-add - <<< "${{ secrets.PRIVATE_KEY }}"
-          ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} < whoami
+          ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} < $whoami
       - run: |
           whoami
           cd ${{ secrets.PROJECT_LOCAL_REPO }}
