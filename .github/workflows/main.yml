@@ -14,16 +14,20 @@ jobs:
       - name: connect to ssh
         shell: bash
         run: |
-          ::group::connect to ssh
           mkdir -p ~/.ssh
           ssh-keyscan ${{ secrets.HOST }} >> ~/.ssh/known_hosts
           eval `ssh-agent`
           ssh-add - <<< "${{ secrets.PRIVATE_KEY }}"
           ssh -t -t ${{ secrets.USERNAME }}@${{ secrets.HOST }}
-          ::endgroup::
+          whoami
+          exit 0;
+      - name: pull master branch
+        run: |
+          whoami
           cd ${{ secrets.PROJECT_LOCAL_REPO }}
           git checkout master
           git pull origin master
+          exit 0;
       #       - name: build backend
       #         run: |
       #           cd backend
