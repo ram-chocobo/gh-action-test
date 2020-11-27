@@ -16,8 +16,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Make deploy script
+        env:
+          DEPLOY_SCRIPT: shell.sh
+          DEPLOY_KEY: deploy_key
         run: |
-          cat << EOF > shell.sh
+          cat << EOF > $DEPLOY_SCRIPT
           echo "=== pull master branch ==="
           # cd ${{ secrets.SSH_WORKING_DIRECTORY }}
           # git checkout master
@@ -48,8 +51,10 @@ jobs:
         run: |
           # mkdir -p ~/.ssh
           # eval `ssh-agent`
-          ssh-add - <<< "${{ secrets.PRIVATE_KEY }}"
+          echo "${{ secrets.PRIVATE_KEY }}" > $DEPLOY_KEY
       - name: Run script on ssh
-        run: ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} < shell.sh
+        run: ssh -i $DEPLOY_KEY -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} < $DEPLOY_SCRIPT
       - name: Cleanup
-        run: rm shell.sh
+        run: |
+          rm $DEPLOY_SCRIPT
+          rm $DEPLOY_KEY
