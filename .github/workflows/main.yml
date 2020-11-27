@@ -11,6 +11,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: make script
+        run: |
+          cat << EOF > shell.sh
+          whoami
+          EOF
+          cat shell.sh
       - name: connect to ssh
         shell: bash
         run: |
@@ -18,7 +24,7 @@ jobs:
           ssh-keyscan ${{ secrets.HOST }} >> ~/.ssh/known_hosts
           eval `ssh-agent`
           ssh-add - <<< "${{ secrets.PRIVATE_KEY }}"
-          ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} < "whoami"
+          ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} < shell.sh
       - run: |
           whoami
           cd ${{ secrets.PROJECT_LOCAL_REPO }}
