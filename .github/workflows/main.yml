@@ -48,7 +48,7 @@ jobs:
         run: |
           # mkdir -p ~/.ssh
           # eval `ssh-agent`
-          ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
+          ssh-add - <<< "${{ secrets.PRIVATE_KEY }}"
       - name: Run script on ssh
         run: ssh -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} < shell.sh
       - name: Cleanup
