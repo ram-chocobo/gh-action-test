@@ -12,7 +12,7 @@ on:
       - created
 
 jobs:
-  배포:
+  Deploy:
     runs-on: ubuntu-latest
     env:
       DEPLOY_SCRIPT: shell.sh
