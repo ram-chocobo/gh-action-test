@@ -1,5 +1,4 @@
-# 
-# 최신 tag 참조하기: https://stackoverflow.com/a/22857288
+# GitHub Actions 공식 documentation: https://docs.github.com/en/free-pro-team/actions
 # ssh에 shell script 실행하기: https://github.com/fifsky/ssh-action/blob/master/entrypoint.sh
 
 name: Deploy master branch
@@ -7,9 +6,10 @@ name: Deploy master branch
 on:
   push:
     branches: [main]
-  release:
-    types:
-      - created
+# release를 이용해서 배포할수도 있을듯요~
+#   release:
+#     types:
+#       - created
 
 jobs:
   Deploy:
@@ -25,7 +25,7 @@ jobs:
           # cd ${{ secrets.SSH_WORKING_DIRECTORY }}
           # git checkout master
           # git pull origin master
-          # # 최신 tag를 이용할경우 git pull origin $(git describe --tags $(git rev-list --tags --max-count=1))
+          # # tag를 이용할경우 git pull origin $(git describe --tags $(git rev-list --tags --max-count=1))
           
           echo "=== build backend ==="
           # cd backend
@@ -45,20 +45,23 @@ jobs:
           
           echo "=== update nginx serve files ==="
           # rm -rf ${{ secrets.NGINX_DIRECTORY }}
-          # cp ./frontend/dist ${{ secrets.NGINX_DIRECTORY }}
+          # cp ./frontend/dist/* ${{ secrets.NGINX_DIRECTORY }}
+          
+          echo "Done🚀"
           EOF
+
       - name: Setting ssh agent and key
         run: |
           # mkdir -p ~/.ssh
           # eval `ssh-agent`
           echo "${{ secrets.PRIVATE_KEY }}" > $DEPLOY_KEY
           chmod 600 $DEPLOY_KEY
+
       - name: Run script on ssh
-        run: |
-          exit 255
-          # ssh -i $DEPLOY_KEY -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} < $DEPLOY_SCRIPT
+        run: ssh -i $DEPLOY_KEY -o StrictHostKeyChecking=no ${{ secrets.SSH_ORIGIN }} < $DEPLOY_SCRIPT
+
       - name: Cleanup
         if: ${{ always() }}
         run: |
-          rm $DEPLOY_SCRIPT
-          rm $DEPLOY_KEY
+          rm -f $DEPLOY_SCRIPT
+          rm -f $DEPLOY_KEY
