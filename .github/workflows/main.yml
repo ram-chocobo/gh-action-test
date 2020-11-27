@@ -1,5 +1,6 @@
 # 
-# https://github.com/fifsky/ssh-action/blob/master/entrypoint.sh
+# 최신 tag 참조하기: https://stackoverflow.com/a/22857288
+# ssh에 shell script 실행하기: https://github.com/fifsky/ssh-action/blob/master/entrypoint.sh
 
 name: Deploy master branch
 
@@ -44,13 +45,11 @@ jobs:
           # cp ./frontend/dist ${{ secrets.NGINX_DIRECTORY }}
           EOF
       - name: Setting ssh agent and key
-        shell: bash
         run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-          eval `ssh-agent`
-          ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
+          # mkdir -p ~/.ssh
+          # eval `ssh-agent`
+          # ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
       - name: Run script on ssh
-        run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} < shell.sh
+        run: ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} < shell.sh
       - name: Cleanup
         run: rm shell.sh
