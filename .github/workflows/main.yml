@@ -52,6 +52,7 @@ jobs:
           # mkdir -p ~/.ssh
           # eval `ssh-agent`
           echo "${{ secrets.PRIVATE_KEY }}" > $DEPLOY_KEY
+          chmod 600 $DEPLOY_KEY
       - name: Run script on ssh
         continue-on-error: true
         run: ssh -i $DEPLOY_KEY -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} < $DEPLOY_SCRIPT
