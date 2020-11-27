@@ -12,13 +12,13 @@ on:
       - created
 
 jobs:
-  deploy:
+  배포:
     runs-on: ubuntu-latest
+    env:
+      DEPLOY_SCRIPT: shell.sh
+      DEPLOY_KEY: deploy_key
     steps:
       - name: Make deploy script
-        env:
-          DEPLOY_SCRIPT: shell.sh
-          DEPLOY_KEY: deploy_key
         run: |
           cat << EOF > $DEPLOY_SCRIPT
           echo "=== pull master branch ==="
@@ -53,6 +53,7 @@ jobs:
           # eval `ssh-agent`
           echo "${{ secrets.PRIVATE_KEY }}" > $DEPLOY_KEY
       - name: Run script on ssh
+        continue-on-error: true
         run: ssh -i $DEPLOY_KEY -o StrictHostKeyChecking=no ${{ secrets.USERNAME }}@${{ secrets.HOST }} < $DEPLOY_SCRIPT
       - name: Cleanup
         run: |
