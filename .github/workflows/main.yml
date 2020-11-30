@@ -18,50 +18,54 @@ jobs:
       DEPLOY_SCRIPT: shell.sh
       DEPLOY_KEY: deploy_key
     steps:
-      - name: Make deploy script
-        run: |
-          cat << EOF > $DEPLOY_SCRIPT
-          echo "=== pull master branch ==="
-          # cd ${{ secrets.SSH_WORKING_DIRECTORY }}
-          # git checkout master
-          # git pull origin master
-          # # tag를 이용할경우 git pull origin $(git describe --tags $(git rev-list --tags --max-count=1))
+      - run: |
+          cd ~/.ssh
+          ls
+          cat known_hosts
+#       - name: Make deploy script
+#         run: |
+#           cat << EOF > $DEPLOY_SCRIPT
+#           echo "=== pull master branch ==="
+#           # cd ${{ secrets.SSH_WORKING_DIRECTORY }}
+#           # git checkout master
+#           # git pull origin master
+#           # # tag를 이용할경우 git pull origin $(git describe --tags $(git rev-list --tags --max-count=1))
           
-          echo "=== build backend ==="
-          # cd backend
-          # npm ci
-          # npm run build
-          # cd ..
+#           echo "=== build backend ==="
+#           # cd backend
+#           # npm ci
+#           # npm run build
+#           # cd ..
           
-          echo "=== build frontend ==="
-          # cd frontend
-          # npm ci
-          # npm run build
-          # cd ..
+#           echo "=== build frontend ==="
+#           # cd frontend
+#           # npm ci
+#           # npm run build
+#           # cd ..
           
-          echo "=== restart backend server ==="
-          # forever stopall
-          # forever start ./backend/dist/app.js
+#           echo "=== restart backend server ==="
+#           # forever stopall
+#           # forever start ./backend/dist/app.js
           
-          echo "=== update nginx serve files ==="
-          # rm -rf ${{ secrets.NGINX_DIRECTORY }}
-          # cp ./frontend/dist/* ${{ secrets.NGINX_DIRECTORY }}
+#           echo "=== update nginx serve files ==="
+#           # rm -rf ${{ secrets.NGINX_DIRECTORY }}
+#           # cp ./frontend/dist/* ${{ secrets.NGINX_DIRECTORY }}
           
-          echo "Done🚀"
-          EOF
+#           echo "Done🚀"
+#           EOF
 
-      - name: Setting ssh agent and key
-        run: |
-          # mkdir -p ~/.ssh
-          # eval `ssh-agent`
-          echo "${{ secrets.PRIVATE_KEY }}" > $DEPLOY_KEY
-          chmod 600 $DEPLOY_KEY
+#       - name: Setting ssh agent and key
+#         run: |
+#           # mkdir -p ~/.ssh
+#           # eval `ssh-agent`
+#           echo "${{ secrets.PRIVATE_KEY }}" > $DEPLOY_KEY
+#           chmod 600 $DEPLOY_KEY
 
-      - name: Run script on ssh
-        run: ssh -i $DEPLOY_KEY -o StrictHostKeyChecking=no ${{ secrets.SSH_ORIGIN }} < $DEPLOY_SCRIPT
+#       - name: Run script on ssh
+#         run: ssh -i $DEPLOY_KEY -o StrictHostKeyChecking=no ${{ secrets.SSH_ORIGIN }} < $DEPLOY_SCRIPT
 
-      - name: Cleanup
-        if: ${{ always() }}
-        run: |
-          rm -f $DEPLOY_SCRIPT
-          rm -f $DEPLOY_KEY
+#       - name: Cleanup
+#         if: ${{ always() }}
+#         run: |
+#           rm -f $DEPLOY_SCRIPT
+#           rm -f $DEPLOY_KEY
