@@ -56,7 +56,9 @@ jobs:
           chmod 600 $DEPLOY_KEY
 
       - name: Run script on ssh
-        run: ssh -i $DEPLOY_KEY -o StrictHostKeyChecking=no ${{ secrets.SSH_ORIGIN }} < $DEPLOY_SCRIPT
+        run: |
+          ls -al
+          # ssh -i $DEPLOY_KEY -o StrictHostKeyChecking=no ${{ secrets.SSH_ORIGIN }} < $DEPLOY_SCRIPT
 
       - name: Cleanup
         if: ${{ always() }}
