@@ -58,7 +58,7 @@ jobs:
       - name: Run script on ssh
         run: |
           ls -al ~/
-          ls -al ~/.ssh
+          ls -al ..
           ls -al
           # ssh -i $DEPLOY_KEY -o StrictHostKeyChecking=no ${{ secrets.SSH_ORIGIN }} < $DEPLOY_SCRIPT
 
